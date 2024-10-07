@@ -25,10 +25,10 @@ def upload_to_cloudinary(file_path, cloudinary_folder, **options):
 			use_filename=True,
 			unique_filename=False,
 			upload_preset=upload_preset,
-			public_id=f"{cloudinary_prefix}{cloudinary_folder}/{file_path.split("/")[-1].split(".")[0]}",
+			public_id=f"{cloudinary_prefix}{cloudinary_folder}/{'.'.join(file_path.split('/')[-1].split('.')[:-1])}",
 			**options,
 		)
-		print(f"Uploaded: {file_path} to {response["url"]}")
+		print(f"Uploaded: {file_path} to {response['url']}")
 	except Exception as e:
 		print(f"Error uploading {file_path}: {str(e)}")
 
@@ -36,11 +36,11 @@ if __name__ == "__main__":
 	for root, _dirs, files in os.walk(base_dir):
 		for file in files:
 			if file.lower().endswith(image_extensions):
-				cloudinary_folder = os.path.relpath(root, base_dir).replace(os.sep, "/")
+				cloudinary_folder = os.path.relpath(root, base_dir).replace(os.sep, "/").replace(".", "")
 				file_path = os.path.join(root, file)
 				upload_to_cloudinary(file_path, cloudinary_folder)
 			
 			elif file.lower().endswith(video_extensions):
-				cloudinary_folder = os.path.relpath(root, base_dir).replace(os.sep, "/")
+				cloudinary_folder = os.path.relpath(root, base_dir).replace(os.sep, "/").replace(".", "")
 				file_path = os.path.join(root, file)
 				upload_to_cloudinary(file_path, cloudinary_folder, resource_type="video")
